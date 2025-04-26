@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tag, Tooltip } from 'antd';
+import { Tag } from 'antd';
 const getClassImage = (className) => {
     try {
       // 클래스 이미지 경로

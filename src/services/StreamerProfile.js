@@ -1,9 +1,4 @@
-import axios from 'axios';
-
-const API = axios.create({
-  // baseURL: 'http://43.202.211.234:8080',
-  baseURL: 'http://localhost:8080',
-});
+import API from './Api';
 
 export const fetchStreamerProfile = async (streamerName, gameType) => {
   try {

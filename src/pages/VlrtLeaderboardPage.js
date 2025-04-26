@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { fetchLeaderboard } from "../services/leaderboard";
 import { Table, Tag, Spin, Alert, Avatar, Button } from "antd";
-import { ArrowUpOutlined, ArrowDownOutlined, MinusOutlined, CrownOutlined, LinkOutlined } from "@ant-design/icons";
+import { ArrowUpOutlined, ArrowDownOutlined, CrownOutlined, LinkOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { VlrtTierBadge } from "../components/VlrtTierBadge";
 import { fetchStreamerProfile } from "../services/StreamerProfile";
 import StreamerModal from "../components/StreamerModal";
+import TagFilterBar from "../components/TagFilterBar";
+import useTagFilter from "../hooks/useTagFilter";
 
 const VlrtLeaderboardPage = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -13,6 +15,12 @@ const VlrtLeaderboardPage = () => {
   const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStreamer, setSelectedStreamer] = useState(null);
+  const {
+    allTags,
+    selectedTags,
+    toggleTag,
+    filteredData,
+  } = useTagFilter(leaderboard);
 
   const {gameType} = useParams();
 
@@ -163,7 +171,7 @@ const VlrtLeaderboardPage = () => {
     },
   ];
 
-  if (isLoading) return <Spin tip="랭킹을 불러오는 중..." style={{ display: "block", textAlign: "center", padding: "20px" }} />;
+  if (isLoading) return <Spin tip="랭킹을 불러오는 중..." > <div style={{ display: "block", textAlign: "center", padding: "20px" }}/></Spin>;
   if (error) return <Alert message="데이터를 불러오는 중 오류 발생" description={error} type="error" showIcon />;
 
   return (
@@ -171,8 +179,13 @@ const VlrtLeaderboardPage = () => {
       <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#722ed1", display: "flex", alignItems: "center", gap: "8px" }}>
         <CrownOutlined /> 발로란트 스트리머 랭킹
       </h1>
+      <TagFilterBar
+        allTags={allTags}
+        selectedTags={selectedTags}
+        onToggle={toggleTag}
+      />
       <Table
-        dataSource={leaderboard}
+        dataSource={filteredData}
         columns={columns}
         rowKey="rank"
         pagination={false}
